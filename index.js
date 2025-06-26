@@ -6,7 +6,8 @@ import session from "express-session";
 import ModuleRoutes from "./Kambaz/Modules/routes.js";
 import assignmentRoutes from "./Kambaz/Assignments/routes.js";
 import enrollmentRoutes from "./Kambaz/Enrollments/routes.js";
-
+import Hello from "./Hello.js";
+import Lab5 from "./Lab5/index.js";
 
 const app = express();
 
@@ -15,7 +16,10 @@ app.use(
     credentials: true,
     origin: process.env.NETLIFY_URL || "http://localhost:5173",
   })
-); // make sure cors is configured BEFORE session
+);
+
+
+app.use(express.json());
 
 app.use(
   session({
@@ -23,16 +27,20 @@ app.use(
     resave: false,
     saveUninitialized: false,
   })
-); // make sure session is configured BEFORE express.json
+);
 
-app.use(express.json()); // make sure express.json is configured BEFORE all routes
+app.use(express.json());
+
 app.use("/api/assignments", assignmentRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
 
 UserRoutes(app);
 CourseRoutes(app);
 ModuleRoutes(app);
+Lab5(app);
+Hello(app);
 
-app.listen(4000, () => {
-  console.log("Server running on http://localhost:4000");
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
